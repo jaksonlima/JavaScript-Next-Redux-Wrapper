@@ -1,10 +1,28 @@
-import Nav from '../components/Nav'
+import React from "react";
+import Link from "next/link";
+import { wrapper } from "../src/store/index";
 
-const IndexPage = () => (
-  <>
-    <Nav />
-    <p>Hello, I'm the index page</p>
-  </>
-)
+import { inSucess } from "../src/store/modules/user/actions";
 
-export default IndexPage
+export const getServerSideProps = wrapper.getServerSideProps(
+  ({ store: { dispatch }, ...rest }) => {
+    console.log({ ...rest });
+
+    const user = { name: "lima" };
+
+    dispatch(inSucess(user));
+
+    return { props: { user } };
+  }
+);
+
+export default function index() {
+  return (
+    <>
+      <div>Index</div>
+      <Link href="/store">
+        <a>pages</a>
+      </Link>
+    </>
+  );
+}
