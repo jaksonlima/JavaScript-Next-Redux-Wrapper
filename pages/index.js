@@ -1,28 +1,25 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import Link from "next/link";
-import { wrapper } from "../src/store/index";
-
-import { inSucess } from "../src/store/modules/user/actions";
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  ({ store: { dispatch }, ...rest }) => {
-    console.log({ ...rest });
-
-    const user = { name: "lima" };
-
-    dispatch(inSucess(user));
-
-    return { props: { user } };
-  }
-);
 
 export default function index() {
+  const dispatch = useDispatch();
+
   return (
     <>
       <div>Index</div>
-      <Link href="/store">
+
+      <Link href="/home">
         <a>pages</a>
       </Link>
+
+      <button
+        onClick={() =>
+          dispatch({ type: "CLIENT_ACTION", payload: { server: "index" } })
+        }
+      >
+        Click
+      </button>
     </>
   );
 }

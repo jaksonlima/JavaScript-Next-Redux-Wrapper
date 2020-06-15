@@ -1,25 +1,25 @@
 import React from "react";
-import App from "next/app";
 import { wrapper } from "../src/store/index";
+import { END } from "redux-saga";
 
-class MyApp extends App {
-  static getInitialProps = async ({ Component, ctx }) => {
-    // ctx.store.dispatch({ type: "TOE", payload: "was set in _app" });
-    // return {
-    //   pageProps: {
-    //     ...(Component.getInitialProps
-    //       ? await Component.getInitialProps(ctx)
-    //       : {}),
-    //     pathname: ctx.pathname,
-    //   },
-    // };
+export const getInitialProps = async ({ Component, ctx }) => {
+  // 1. Wait for all page actions to dispatch
+  const pageProps = {
+    ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
   };
 
-  render() {
-    const { Component, pageProps } = this.props;
-
-    return <Component {...pageProps} />;
+  // 2. Stop the saga if on server
+  if (ctx.req) {
+    ctx.store.dispatch(END);
+    await ctx.store.sagaTask.toPromise();
   }
-}
 
-export default wrapper.withRedux(MyApp);
+  // 3. Return props
+  return {
+    pageProps,
+  };
+};
+
+const WrappedApp = ({ Component, pageProps }) => <Component {...pageProps} />;
+
+export default wrapper.withRedux(WrappedApp);

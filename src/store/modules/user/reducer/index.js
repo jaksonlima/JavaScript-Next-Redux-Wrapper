@@ -1,24 +1,38 @@
 import { HYDRATE } from "next-redux-wrapper";
 import { diff } from "jsondiffpatch";
 
-import { IN_SUCESS } from "../actions";
-
 const INITIAL_STATE = {
-  user: null,
+  server: "init",
+  client: null,
 };
 
 const user = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case HYDRATE:
-      const stateDiff = diff(state, action.payload);
-      const wasBumpedOnClient = stateDiff?.page?.[0]?.endsWith("X");
+      console.log(action);
+
+      const { user } = diff(state, action.payload);
+
+      return {
+        ...user[0],
+      };
+    case "CLIENT_SERVER":
       return {
         ...state,
-        ...action.payload,
-        page: wasBumpedOnClient ? state.page : action.payload.page,
+        server: {
+          ...state.server,
+          tick: action.payload,
+        },
       };
-    case IN_SUCESS:
-      return { ...state, user: action.payload };
+    case "CLIENT_ACTION":
+      console.log(action);
+      return {
+        ...state,
+        client: {
+          ...state.client,
+          tick: action.payload,
+        },
+      };
     default:
       return state;
   }
