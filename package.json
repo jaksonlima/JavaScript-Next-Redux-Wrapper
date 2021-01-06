@@ -7,7 +7,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "jsondiffpatch": "^0.4.1",
     "next": "latest",
     "next-redux-wrapper": "^6.0.2",
